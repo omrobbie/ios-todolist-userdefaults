@@ -12,8 +12,11 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
+    private var items = [String]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Todo List"
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -24,7 +27,8 @@ class ViewController: UIViewController {
         let alertVC = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
         let actionCancel = UIAlertAction(title: "Cancel", style: .cancel)
         let actionAdd = UIAlertAction(title: "Add", style: .default) { (action) in
-            print(textField.text!)
+            self.items.append(textField.text!)
+            self.tableView.reloadData()
         }
 
         alertVC.addTextField { (alertTextField) in
@@ -42,12 +46,12 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return items.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
-        cell.textLabel?.text = "Item \(indexPath.row)"
+        cell.textLabel?.text = items[indexPath.row]
         return cell
     }
 }
