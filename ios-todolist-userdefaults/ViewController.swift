@@ -13,12 +13,28 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     private var items = [String]()
+    private let userDefaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupList()
+        loadData()
+    }
+
+    private func setupList() {
         title = "Todo List"
         tableView.delegate = self
         tableView.dataSource = self
+    }
+
+    private func saveData() {
+        userDefaults.set(self.items, forKey: "items")
+    }
+
+    private func loadData() {
+        if let array = userDefaults.array(forKey: "items") {
+            items = array as! [String]
+        }
     }
 
     @IBAction func btnAddTapped(_ sender: Any) {
@@ -29,6 +45,7 @@ class ViewController: UIViewController {
         let actionAdd = UIAlertAction(title: "Add", style: .default) { (action) in
             self.items.append(textField.text!)
             self.tableView.reloadData()
+            self.saveData()
         }
 
         alertVC.addTextField { (alertTextField) in
@@ -59,6 +76,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             items.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            saveData()
         }
     }
 }
